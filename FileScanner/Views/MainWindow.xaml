@@ -21,6 +21,12 @@
         <StatusBar DockPanel.Dock="Bottom">
             <TextBlock Text="Selected folder : "/>
             <TextBlock Text="{Binding SelectedFolder}"/>
+            <TextBlock Text="Number of Directories : "/>
+            <TextBlock Text="{Binding NumberDir}"/>
+            <TextBlock Text="Number of Files : "/>
+            <TextBlock Text="{Binding NumberFiles}"/>
+            <TextBlock Text="Execution time : "/>
+            <TextBlock Text="{Binding Time}"/>
         </StatusBar>
         <Grid>
             <ListBox ItemsSource="{Binding Items}">

@@ -24,6 +24,39 @@ namespace FileScanner.ViewModels
 
         public DelegateCommand<string> ScanFolderAsyncCommand { get; private set; }
 
+        private string time;
+        private int numberDir;
+        private int numberFiles;
+
+        public int NumberDir
+        {
+            get => numberDir;
+            set
+            {
+                numberDir = value;
+                OnPropertyChanged();
+            }
+        }
+        public int NumberFiles
+        {
+            get => numberFiles;
+            set
+            {
+                numberFiles = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Time
+        {
+            get => time;
+            set
+            {
+                time = value + "ms";
+                OnPropertyChanged();
+            }
+        }
+
         public ObservableCollection<string> FolderItems { 
             get => folderItems;
             set 
@@ -98,8 +131,7 @@ namespace FileScanner.ViewModels
             }
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
-            MessageBox.Show($"Total execution time : {elapsedMs}");
-            
+            Time = elapsedMs.ToString();
         }
         private async void ScanFolderAsync(string dir)
         {
@@ -129,17 +161,18 @@ namespace FileScanner.ViewModels
             });
             watch.Stop();
             var elapsedMs = watch.ElapsedMilliseconds;
-            MessageBox.Show($"Total execution time : {elapsedMs}");
-
+            Time = elapsedMs.ToString();
         }
         IEnumerable<string> GetDirs(string dir)
         {
             foreach (var d in Directory.EnumerateDirectories(dir, "*"))
             {
+                NumberDir++;
                 yield return d;
 
                 foreach (var f in Directory.EnumerateFiles(d, "*"))
                 {
+                    NumberFiles++;
                     yield return f;
                 }
             }
