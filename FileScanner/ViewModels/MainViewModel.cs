@@ -118,9 +118,16 @@ namespace FileScanner.ViewModels
             {
                 FolderItems = new ObservableCollection<string>(GetDirs(dir));
 
+                foreach (var item in Directory.EnumerateDirectories(dir, "*"))
+                {
+                    var temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
+
+                    Items.Add(temp);
+                }
+
                 foreach (var item in Directory.EnumerateFiles(dir, "*"))
                 {
-                    Items temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
+                    var temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
 
                     Items.Add(temp);
                 }
@@ -141,17 +148,26 @@ namespace FileScanner.ViewModels
                 try
                 {
                     FolderItems = new ObservableCollection<string>(GetDirs(dir));
-
-                    foreach (var item in Directory.EnumerateFiles(dir, "*"))
+                    foreach (var item in Directory.EnumerateDirectories(dir, "*"))
                     {
-                        Items temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
+                        var temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
 
                         App.Current.Dispatcher.BeginInvoke(
                             (Action)delegate ()
                             {
                                 Items.Add(temp);
                             });
-                        
+                    }
+
+                    foreach (var item in Directory.EnumerateFiles(dir, "*"))
+                    {
+                        var temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
+
+                        App.Current.Dispatcher.BeginInvoke(
+                            (Action)delegate ()
+                            {
+                                Items.Add(temp);
+                            });
                     }
                 }
                 catch (UnauthorizedAccessException)
@@ -170,7 +186,7 @@ namespace FileScanner.ViewModels
                 NumberDir++;
                 yield return d;
 
-                foreach (var f in Directory.EnumerateFiles(d, "*"))
+                foreach(var f in Directory.EnumerateFiles(d,"*"))
                 {
                     NumberFiles++;
                     yield return f;
