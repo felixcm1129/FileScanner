@@ -17,12 +17,12 @@ namespace FileScanner.ViewModels
     {
         private string selectedFolder;
         private ObservableCollection<string> folderItems = new ObservableCollection<string>();
-        private ObservableCollection<Items> items;
-
-        //private List<Items> items = new List<Items>();
+        private ObservableCollection<Items> items = new ObservableCollection<Items>();
          
         public DelegateCommand<string> OpenFolderCommand { get; private set; }
         public DelegateCommand<string> ScanFolderCommand { get; private set; }
+
+        public DelegateCommand<string> ScanFolderAsyncCommand { get; private set; }
 
         public ObservableCollection<string> FolderItems { 
             get => folderItems;
@@ -51,6 +51,7 @@ namespace FileScanner.ViewModels
                 selectedFolder = value;
                 OnPropertyChanged();
                 ScanFolderCommand.RaiseCanExecuteChanged();
+                ScanFolderAsyncCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -58,12 +59,7 @@ namespace FileScanner.ViewModels
         {
             OpenFolderCommand = new DelegateCommand<string>(OpenFolder);
             ScanFolderCommand = new DelegateCommand<string>(ScanFolder, CanExecuteScanFolder);
-            initValues();
-        }
-
-        private void initValues()
-        {
-            Items = new ObservableCollection<Items>();
+            ScanFolderAsyncCommand = new DelegateCommand<string>(ScanFolderAsync, CanExecuteScanFolder);
         }
 
         private bool CanExecuteScanFolder(string obj)
@@ -82,8 +78,9 @@ namespace FileScanner.ViewModels
             }
         }
 
-        private void ScanFolder(string dir)
+        private void ScanFolder(string dir) 
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             try 
             {
                 FolderItems = new ObservableCollection<string>(GetDirs(dir));
@@ -99,7 +96,41 @@ namespace FileScanner.ViewModels
             {
                 MessageBox.Show("Access denied to one of the scanned directories. Select another directories to scan.");
             }
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            MessageBox.Show($"Total execution time : {elapsedMs}");
             
+        }
+        private async void ScanFolderAsync(string dir)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            await Task.Run(() =>
+            {
+                try
+                {
+                    FolderItems = new ObservableCollection<string>(GetDirs(dir));
+
+                    foreach (var item in Directory.EnumerateFiles(dir, "*"))
+                    {
+                        Items temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
+
+                        App.Current.Dispatcher.BeginInvoke(
+                            (Action)delegate ()
+                            {
+                                Items.Add(temp);
+                            });
+                        
+                    }
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    MessageBox.Show("Access denied to one of the scanned directories. Select another directories to scan.");
+                }
+            });
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            MessageBox.Show($"Total execution time : {elapsedMs}");
+
         }
         IEnumerable<string> GetDirs(string dir)
         {
@@ -117,7 +148,5 @@ namespace FileScanner.ViewModels
         ///TODO : Tester avec un dossier avec beaucoup de fichier
         ///TODO : Rendre l'application asynchrone
         ///TODO : Ajouter un try/catch pour les dossiers sans permission
-
-
     }
 }

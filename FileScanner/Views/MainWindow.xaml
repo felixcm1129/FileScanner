@@ -15,7 +15,7 @@
         </Menu>
         <ToolBar DockPanel.Dock="Top">
             <Button Content="Scan" Command="{Binding ScanFolderCommand}" CommandParameter="{Binding SelectedFolder}" />
-
+            <Button Content="San Async" Command="{Binding ScanFolderAsyncCommand}" CommandParameter="{Binding SelectedFolder}"/>
 
         </ToolBar>
         <StatusBar DockPanel.Dock="Bottom">
