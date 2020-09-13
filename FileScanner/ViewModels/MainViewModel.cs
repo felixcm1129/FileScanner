@@ -181,6 +181,9 @@ namespace FileScanner.ViewModels
         }
         IEnumerable<string> GetDirs(string dir)
         {
+            NumberDir = 0;
+            NumberFiles = 0;
+
             foreach (var d in Directory.EnumerateDirectories(dir, "*"))
             {
                 NumberDir++;
