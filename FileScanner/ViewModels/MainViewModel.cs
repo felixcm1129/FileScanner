@@ -1,12 +1,15 @@
 ﻿using FileScanner.Commands;
+using FileScanner.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox;
 
 namespace FileScanner.ViewModels
 {
@@ -14,6 +17,9 @@ namespace FileScanner.ViewModels
     {
         private string selectedFolder;
         private ObservableCollection<string> folderItems = new ObservableCollection<string>();
+        private ObservableCollection<Items> items;
+
+        //private List<Items> items = new List<Items>();
          
         public DelegateCommand<string> OpenFolderCommand { get; private set; }
         public DelegateCommand<string> ScanFolderCommand { get; private set; }
@@ -23,6 +29,16 @@ namespace FileScanner.ViewModels
             set 
             { 
                 folderItems = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<Items> Items
+        {
+            get => items;
+            set
+            {
+                items = value;
                 OnPropertyChanged();
             }
         }
@@ -42,6 +58,12 @@ namespace FileScanner.ViewModels
         {
             OpenFolderCommand = new DelegateCommand<string>(OpenFolder);
             ScanFolderCommand = new DelegateCommand<string>(ScanFolder, CanExecuteScanFolder);
+            initValues();
+        }
+
+        private void initValues()
+        {
+            Items = new ObservableCollection<Items>();
         }
 
         private bool CanExecuteScanFolder(string obj)
@@ -62,19 +84,33 @@ namespace FileScanner.ViewModels
 
         private void ScanFolder(string dir)
         {
-            FolderItems = new ObservableCollection<string>(GetDirs(dir));
-            
-            foreach (var item in Directory.EnumerateFiles(dir, "*"))
+            try 
             {
-                FolderItems.Add(item);
-            }
-        }
+                FolderItems = new ObservableCollection<string>(GetDirs(dir));
 
+                foreach (var item in Directory.EnumerateFiles(dir, "*"))
+                {
+                    Items temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
+
+                    Items.Add(temp);
+                }
+            }
+            catch(UnauthorizedAccessException)
+            {
+                MessageBox.Show("Access denied to one of the scanned directories. Select another directories to scan.");
+            }
+            
+        }
         IEnumerable<string> GetDirs(string dir)
-        {            
+        {
             foreach (var d in Directory.EnumerateDirectories(dir, "*"))
             {
                 yield return d;
+
+                foreach (var f in Directory.EnumerateFiles(d, "*"))
+                {
+                    yield return f;
+                }
             }
         }
 

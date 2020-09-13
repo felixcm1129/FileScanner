@@ -10,6 +10,7 @@ namespace FileScanner.Models
     {
         private string item;
         private string image;
+        private string image2;
 
         public string Item
         {
@@ -26,6 +27,16 @@ namespace FileScanner.Models
             set
             {
                 image = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string Image2
+        {
+            get => image2;
+            set
+            {
+                image2 = value;
                 OnPropertyChanged();
             }
         }
