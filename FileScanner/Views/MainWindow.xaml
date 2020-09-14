@@ -35,7 +35,7 @@
                         <StackPanel Orientation="Horizontal">
                             <Image Source="{Binding Image}" Width="25px" Margin="6"/>
                             <Image Source="{Binding Image2}" Width="25px" Margin="6"/>
-                            <TextBlock Text="{Binding Item}"/>
+                            <TextBlock Text="{Binding Link}"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

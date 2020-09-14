@@ -6,18 +6,18 @@ using System.Text;
 
 namespace FileScanner.Models
 {
-    public class Items : INotifyPropertyChanged
+    public class Item : INotifyPropertyChanged
     {
-        private string item;
+        private string link;
         private string image;
         private string image2;
 
-        public string Item
+        public string Link
         {
-            get => item;
+            get => link;
             set
             {
-                item = value;
+                link = value;
                 OnPropertyChanged();
             }
         }

@@ -17,7 +17,7 @@ namespace FileScanner.ViewModels
     {
         private string selectedFolder;
         private ObservableCollection<string> folderItems = new ObservableCollection<string>();
-        private ObservableCollection<Items> items = new ObservableCollection<Items>();
+        private ObservableCollection<Item> items = new ObservableCollection<Item>();
          
         public DelegateCommand<string> OpenFolderCommand { get; private set; }
         public DelegateCommand<string> ScanFolderCommand { get; private set; }
@@ -66,7 +66,7 @@ namespace FileScanner.ViewModels
             }
         }
 
-        public ObservableCollection<Items> Items
+        public ObservableCollection<Item> Items
         {
             get => items;
             set
@@ -120,14 +120,14 @@ namespace FileScanner.ViewModels
 
                 foreach (var item in Directory.EnumerateDirectories(dir, "*"))
                 {
-                    var temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
+                    var temp = new Item() { Link = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
 
                     Items.Add(temp);
                 }
 
                 foreach (var item in Directory.EnumerateFiles(dir, "*"))
                 {
-                    var temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
+                    var temp = new Item() { Link = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
 
                     Items.Add(temp);
                 }
@@ -150,7 +150,7 @@ namespace FileScanner.ViewModels
                     FolderItems = new ObservableCollection<string>(GetDirs(dir));
                     foreach (var item in Directory.EnumerateDirectories(dir, "*"))
                     {
-                        var temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
+                        var temp = new Item() { Link = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
 
                         App.Current.Dispatcher.BeginInvoke(
                             (Action)delegate ()
@@ -161,7 +161,7 @@ namespace FileScanner.ViewModels
 
                     foreach (var item in Directory.EnumerateFiles(dir, "*"))
                     {
-                        var temp = new Items() { Item = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
+                        var temp = new Item() { Link = item, Image = "/Images/file.png", Image2 = "/Images/folder.bmp" };
 
                         App.Current.Dispatcher.BeginInvoke(
                             (Action)delegate ()
